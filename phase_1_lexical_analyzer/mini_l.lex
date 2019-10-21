@@ -3,13 +3,16 @@
    /* Written by Matthew Coyne */
    
 %{
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
     int currLine = 1, currPos = 1;
 %}   
 
 DIGIT [0-9]+
-IDENT [a-zA-Z]|([a-zA-Z]+[a-zA-Z0-9_]*[a-zA-Z0-9]+)
-INVAL_N [0-9_]+[a-zA-Z0-9_]*
-INVAL_U [a-zA-Z]+[a-zA-Z0-9_]*[_]+
+IDENT [a-zA-Z]|([a-zA-Z][a-zA-Z0-9_]*[a-zA-Z0-9]+)
+INVAL_N [0-9|_][a-zA-Z0-9|_]*
+INVAL_U [a-zA-Z][a-zA-Z0-9_]*[_]+
 
 %%
  /* ""  {printf("\n"); currPos += yyleng;} */
@@ -41,20 +44,20 @@ INVAL_U [a-zA-Z]+[a-zA-Z0-9_]*[_]+
 "true" {printf("TRUE\n"); currPos += yyleng;}
 "false" {printf("FALSE\n"); currPos += yyleng;}
 "return" {printf("RETURN\n"); currPos += yyleng;}
- // ARITHMETIC OPERATORS
+  /* ARITHMETIC OPERATORS */
 "-"   {printf("SUB\n"); currPos += yyleng;}
 "+"   {printf("ADD\n"); currPos += yyleng;}
 "*"   {printf("MULT\n"); currPos += yyleng;}
 "/"   {printf("DIV\n"); currPos += yyleng;}
 "%"   {printf("MOD\n"); currPos += yyleng;}
- // COMPARISON OPERATORS
+ /* COMPARISON OPERATORS */
 "=="  {printf("EQ\n"); currPos += yyleng;}
 "<>"  {printf("NEQ\n"); currPos += yyleng;}
 "<"   {printf("LT\n"); currPos += yyleng;}
 ">"   {printf("GT\n"); currPos += yyleng;} 
 "<="  {printf("LTE\n"); currPos += yyleng;}
 ">="  {printf("GTE\n"); currPos += yyleng;}
- // OTHER SPECIAL SYMBOLS
+ /* OTHER SPECIAL SYMBOLS */
 ";"  {printf("SEMICOLON\n"); currPos += yyleng;}
 ":"  {printf("COLON\n"); currPos += yyleng;}
 ","  {printf("COMMA\n"); currPos += yyleng;}
@@ -64,11 +67,29 @@ INVAL_U [a-zA-Z]+[a-zA-Z0-9_]*[_]+
 "]"   {printf("R_SQUARE_BRACKET\n"); currPos += yyleng;}
 ":="  {printf("ASSIGN\n"); currPos += yyleng;}
 
-DIGIT  {printf("NUMBER %s\n",yytext);currPos += yyleng;}
-IDENT  {printf("IDENT %s\n",yytext);currPos += yyleng;}
-INVAL_N  {printf("Error at line %s, column %s: identifier: \"%s\" must begin with a letter.\n",currLine, currPos, yytext);currPos += yyleng;}
-INVAL_U  {printf("Error at line %s, column %s: identifier: \"%s\" cannot end with an underscore.\n",currLine, currPos, yytext);currPos += yyleng;}
-.  {printf("Error at line %s, column %s: identifier: \"%s\" unrecognized symbol.\n",currLine, currPos, yytext);currPos += yyleng;}
- // HOUSEKEEPING
- ["\n"] {++currLine; currPos = 0;}
+ /* HOUSEKEEPING */
+"\n" {++currLine; currPos = 0;}
+"\t" {++currPos;}
+" "  {++currPos;}
+  
+{DIGIT}  {printf("NUMBER %s\n",yytext);currPos += yyleng;}
+{IDENT}  {printf("IDENT %s\n",yytext);currPos += yyleng;}
+{INVAL_N}  {printf("Error at line %d, column %d: identifier: \"%s\" must begin with a letter.\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
+{INVAL_U} {printf("Error at line %d, column %d: identifier: \"%s\" cannot end with an underscore.\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
+
+.  {printf("Error at line %d, column %d: identifier: \"%s\" unrecognized symbol.\n",currLine, currPos, yytext);currPos += yyleng;}
+
 %%
+
+yywrap(){}
+int main(int argc, char* argv[])
+{
+    if(argc == 2)
+    {
+        yyin = fopen(argv[1],"r");
+        yylex();
+        fclose(yyin);
+    }
+    else {yylex();}
+    return 0;
+}
