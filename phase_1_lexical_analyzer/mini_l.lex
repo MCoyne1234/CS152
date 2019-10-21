@@ -77,7 +77,7 @@ INVAL_U [a-zA-Z][a-zA-Z0-9_]*[_]+
 {INVAL_N}  {printf("Error at line %d, column %d: identifier: \"%s\" must begin with a letter.\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
 {INVAL_U} {printf("Error at line %d, column %d: identifier: \"%s\" cannot end with an underscore.\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
 
-.  {printf("Error at line %d, column %d: identifier: \"%s\" unrecognized symbol.\n",currLine, currPos, yytext);currPos += yyleng;}
+.  {printf("Error at line %d, column %d: identifier: \"%s\" unrecognized symbol.\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
 
 %%
 
