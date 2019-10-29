@@ -38,4 +38,47 @@
 
 %%
 
+program:	/*epsilon*/ {printf("program -> epsilon\n");}
+		| function program {printf("program -> function\n\n");}
+		;
 
+function:	FUNCTION ident SEMICOLON params locals body {prinft("function -> FUNCTION ident SEMICOLON 
+		params locals body\n");}
+		| error
+		;
+
+params:         BEGIN_PARAMS declarations END_PARAMS
+                    { printf("params -> BEGIN_PARAMS declarations END_PARAMS\n"); }
+                | error 
+                ;
+
+locals:         BEGIN_LOCALS declarations END_LOCALS
+                    { printf("local -> BEGIN_LOCALS declarations END_LOCALS\n"); }
+                | error
+                ;
+
+body:           BEGIN_BODY stmts END_BODY
+                    { printf("body -> BEGIN_BODY stmts END_BODY\n"); }
+                | error
+                ;
+
+declarations:       { printf("declarations -> epsilon\n"); }
+                | declaration SEMICOLON declarations
+                    { printf("declarations -> declarations SEMI declarations\n"); }
+                | declaration error
+                ;
+
+declaration:    idents COLON INTEGER
+                    { printf("declaration -> idents COLON INTEGER\n"); }
+                | idents COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER
+                { printf("declaration -> idents COLON ARRAY L_SQUARE NUMBER R_SQUARE OF INTEGER\n"); }
+                | idents error
+                ;
+
+ident:          IDENT { printf("ident -> IDENT %s\n", $1); }
+
+idents:         ident
+                | ident COMMA idents
+                    { printf("idents -> ident COMMA idents\n"); }
+                ;
+ 
