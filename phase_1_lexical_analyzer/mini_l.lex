@@ -68,16 +68,17 @@ INVAL_U [a-zA-Z][a-zA-Z0-9_]*[_]+
 ":="  {printf("ASSIGN\n"); currPos += yyleng;}
 
  /* HOUSEKEEPING */
-"\n" {++currLine; currPos = 0;}
+"\n" {++currLine; currPos = 1;}
 "\t" {++currPos;}
 " "  {++currPos;}
+##[^\n]* {currPos += yyleng;}
   
 {DIGIT}  {printf("NUMBER %s\n",yytext);currPos += yyleng;}
 {IDENT}  {printf("IDENT %s\n",yytext);currPos += yyleng;}
-{INVAL_N}  {printf("Error at line %d, column %d: identifier: \"%s\" must begin with a letter.\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
-{INVAL_U} {printf("Error at line %d, column %d: identifier: \"%s\" cannot end with an underscore.\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
+{INVAL_N}  {printf("Error at line %d, column %d: identifier \"%s\" must begin with a letter\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
+{INVAL_U} {printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
 
-.  {printf("Error at line %d, column %d: identifier: \"%s\" unrecognized symbol.\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
+.  {printf("Error at line %d, column %d: identifier \"%s\" unrecognized symbol\n",currLine, currPos, yytext);currPos += yyleng;exit(0);}
 
 %%
 
