@@ -44,7 +44,7 @@ INVAL_U [a-zA-Z][a-zA-Z0-9_]*[_]+
 "not" {currPos += yyleng; return NOT;}
 "true" {currPos += yyleng; return TRUE;}
 "false" {currPos += yyleng; return FALSE;}
-"currPos += yyleng; return" {currPos += yyleng; return RETURN;}
+"return" {currPos += yyleng; return RETURN;}
   /* ARITHMETIC OPERATORS */
 "-"   {currPos += yyleng; return SUB;}
 "+"   {currPos += yyleng; return ADD;}
@@ -62,10 +62,10 @@ INVAL_U [a-zA-Z][a-zA-Z0-9_]*[_]+
 ";"  {currPos += yyleng; return SEMICOLON;}
 ":"  {currPos += yyleng; return COLON;}
 ","  {currPos += yyleng; return COMMA;}
-"("   {currPos += yyleng; return L_PAREN;}
-")"   {currPos += yyleng; return R_PAREN;}
-"["   {currPos += yyleng; return L_SQUARE_BRACKET;}
-"]"   {currPos += yyleng; return R_SQUARE_BRACKET;}
+"("   {currPos += yyleng; return PAREN_L;}
+")"   {currPos += yyleng; return PAREN_R;}
+"["   {currPos += yyleng; return SQUARE_BRACKET_L;}
+"]"   {currPos += yyleng; return SQUARE_BRACKET_R;}
 ":="  {currPos += yyleng; return ASSIGN;}
 
  /* HOUSEKEEPING */
